@@ -6,6 +6,7 @@ import com.assignment.ec6.entity.Product;
 import com.assignment.ec6.exception.BadRequestException;
 import com.assignment.ec6.exception.ResourceNotFoundException;
 import com.assignment.ec6.repository.ProductRepository;
+import com.assignment.ec6.validation.RequestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +19,12 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final RequestValidator requestValidator;
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {
+        requestValidator.validate(request);
+
         Product product = Product.builder()
                 .name(request.getName())
                 .price(request.getPrice())
@@ -34,6 +38,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
+        requestValidator.validate(request);
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produk dengan ID " + id + " tidak ditemukan"));
 
