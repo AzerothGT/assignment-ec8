@@ -19,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -70,7 +71,7 @@ class ProductControllerTest {
     void testAddProduct_Success() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .name("Laptop Gaming")
-                .price(15000000.0)
+                .price(new BigDecimal("15000000.0"))
                 .description("High end gaming laptop")
                 .stock(10)
                 .build();
@@ -89,7 +90,7 @@ class ProductControllerTest {
     void testAddProduct_InvalidPrice_ShouldReturn400() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .name("Laptop Gaming")
-                .price(0.0)
+                .price(new BigDecimal("0.0"))
                 .description("Invalid price laptop")
                 .stock(10)
                 .build();
@@ -106,7 +107,7 @@ class ProductControllerTest {
     void testAddProduct_InvalidStock_ShouldReturn400() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .name("Laptop Gaming")
-                .price(100.0)
+                .price(new BigDecimal("100.0"))
                 .description("Invalid stock laptop")
                 .stock(-5)
                 .build();
@@ -123,14 +124,14 @@ class ProductControllerTest {
     void testEditProduct_Success() throws Exception {
         Product existing = productRepository.save(Product.builder()
                 .name("Mouse Wireless")
-                .price(150000.0)
+                .price(new BigDecimal("150000.0"))
                 .description("Mouse bluetooth")
                 .stock(20)
                 .build());
 
         ProductRequest updateRequest = ProductRequest.builder()
                 .name("Mouse Wireless Gaming")
-                .price(200000.0)
+                .price(new BigDecimal("200000.0"))
                 .description("Updated description")
                 .stock(25)
                 .build();
@@ -149,7 +150,7 @@ class ProductControllerTest {
     void testEditProduct_NotFound_ShouldReturn404() throws Exception {
         ProductRequest updateRequest = ProductRequest.builder()
                 .name("Mouse Wireless")
-                .price(150000.0)
+                .price(new BigDecimal("150000.0"))
                 .description("Description")
                 .stock(20)
                 .build();
@@ -166,7 +167,7 @@ class ProductControllerTest {
     void testUpdateStockOnSale_Success() throws Exception {
         Product existing = productRepository.save(Product.builder()
                 .name("Keyboard Mechanical")
-                .price(500000.0)
+                .price(new BigDecimal("500000.0"))
                 .description("RGB Keyboard")
                 .stock(15)
                 .build());
@@ -187,7 +188,7 @@ class ProductControllerTest {
     void testUpdateStockOnSale_ExceedsStock_ShouldReturn400() throws Exception {
         Product existing = productRepository.save(Product.builder()
                 .name("Monitor 4K")
-                .price(3000000.0)
+                .price(new BigDecimal("3000000.0"))
                 .description("27 inch monitor")
                 .stock(2)
                 .build());
@@ -208,7 +209,7 @@ class ProductControllerTest {
     void testDeleteProduct_Success() throws Exception {
         Product existing = productRepository.save(Product.builder()
                 .name("Flashdisk 64GB")
-                .price(80000.0)
+                .price(new BigDecimal("80000.0"))
                 .description("USB 3.0")
                 .stock(50)
                 .build());

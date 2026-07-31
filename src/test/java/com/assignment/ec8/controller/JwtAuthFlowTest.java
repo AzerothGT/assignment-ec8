@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,7 +65,7 @@ class JwtAuthFlowTest {
 
         ProductRequest request = ProductRequest.builder()
                 .name("Produk Uji")
-                .price(5000.0)
+                .price(new BigDecimal("5000.0"))
                 .description("d")
                 .stock(1)
                 .build();

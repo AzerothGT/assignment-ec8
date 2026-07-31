@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
+
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,7 +61,7 @@ class SecurityTest {
     void testCreateProduct_AsUser_ShouldReturn403() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .name("Produk Terlarang")
-                .price(10000.0)
+                .price(new BigDecimal("10000.0"))
                 .description("USER tidak boleh membuat produk")
                 .stock(5)
                 .build();
@@ -77,7 +79,7 @@ class SecurityTest {
     void testCreateProduct_AsAdmin_ShouldReturn201() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .name("Produk Resmi")
-                .price(10000.0)
+                .price(new BigDecimal("10000.0"))
                 .description("Dibuat oleh ADMIN")
                 .stock(5)
                 .build();

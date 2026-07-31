@@ -13,6 +13,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -44,7 +46,7 @@ class CacheTest {
     @Test
     void getAllProducts_ShouldPopulateProductsCache() {
         productRepository.save(Product.builder()
-                .name("Produk A").price(1000.0).description("d1").stock(10).build());
+                .name("Produk A").price(new BigDecimal("1000.0")).description("d1").stock(10).build());
 
         productService.getAllProducts();
 
@@ -55,7 +57,7 @@ class CacheTest {
     @Test
     void getProductById_ShouldPopulateCacheWithKeyId() {
         Product product = productRepository.save(Product.builder()
-                .name("Produk B").price(2000.0).description("d2").stock(5).build());
+                .name("Produk B").price(new BigDecimal("2000.0")).description("d2").stock(5).build());
 
         productService.getProductById(product.getId());
 
@@ -66,11 +68,11 @@ class CacheTest {
     @Test
     void updateProduct_ShouldRefreshProductByIdCacheAndEvictList() {
         Product product = productRepository.save(Product.builder()
-                .name("Produk Lama").price(1000.0).description("d3").stock(5).build());
+                .name("Produk Lama").price(new BigDecimal("1000.0")).description("d3").stock(5).build());
 
         ProductRequest request = ProductRequest.builder()
                 .name("Produk Baru")
-                .price(2500.0)
+                .price(new BigDecimal("2500.0"))
                 .description("d3-updated")
                 .stock(8)
                 .build();
@@ -88,7 +90,7 @@ class CacheTest {
     @Test
     void deleteProduct_ShouldEvictCaches() {
         Product product = productRepository.save(Product.builder()
-                .name("Produk C").price(3000.0).description("d4").stock(3).build());
+                .name("Produk C").price(new BigDecimal("3000.0")).description("d4").stock(3).build());
 
         productService.getProductById(product.getId());
         productService.getAllProducts();

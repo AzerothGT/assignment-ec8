@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -49,12 +50,12 @@ public class DataInitializer implements CommandLineRunner {
 
         if (productRepository.count() == 0) {
             productRepository.saveAll(List.of(
-                    Product.builder().name("Laptop Gaming Pro").price(15000000.0).description("Laptop gaming high-end 16GB RAM").stock(10).build(),
-                    Product.builder().name("Mouse Wireless").price(150000.0).description("Mouse bluetooth silent click").stock(50).build(),
-                    Product.builder().name("Keyboard Mechanical").price(500000.0).description("Keyboard RGB mechanical switch").stock(30).build(),
-                    Product.builder().name("Monitor 4K 27 Inch").price(3000000.0).description("Monitor IPS 4K UHD").stock(15).build(),
-                    Product.builder().name("Flashdisk 64GB").price(80000.0).description("USB 3.0 flashdisk").stock(100).build(),
-                    Product.builder().name("Webcam Full HD").price(450000.0).description("Webcam 1080p auto-focus").stock(25).build()
+                    Product.builder().name("Laptop Gaming Pro").price(new BigDecimal("15000000.0")).description("Laptop gaming high-end 16GB RAM").stock(10).build(),
+                    Product.builder().name("Mouse Wireless").price(new BigDecimal("150000.0")).description("Mouse bluetooth silent click").stock(50).build(),
+                    Product.builder().name("Keyboard Mechanical").price(new BigDecimal("500000.0")).description("Keyboard RGB mechanical switch").stock(30).build(),
+                    Product.builder().name("Monitor 4K 27 Inch").price(new BigDecimal("3000000.0")).description("Monitor IPS 4K UHD").stock(15).build(),
+                    Product.builder().name("Flashdisk 64GB").price(new BigDecimal("80000.0")).description("USB 3.0 flashdisk").stock(100).build(),
+                    Product.builder().name("Webcam Full HD").price(new BigDecimal("450000.0")).description("Webcam 1080p auto-focus").stock(25).build()
             ));
             log.info("6 produk sampel berhasil dibuat");
         }

@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "products")
 @Data
@@ -26,8 +28,8 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal price;
 
     @Column(columnDefinition = "TEXT")
     private String description;
