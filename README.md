@@ -226,15 +226,13 @@ pm.environment.set("token", jsonData.data.token);
 {
     "status": 200,
     "message": "Berhasil",
-    "data": [
-        {
-            "id": 1,
-            "name": "Laptop Gaming Pro",
-            "price": 1.5E7,
-            "description": "Laptop gaming high-end 16GB RAM",
-            "stock": 10
-        }
-    ]
+    "data": {
+        "id": 1,
+        "name": "Laptop Gaming Pro",
+        "price": 15000000.00,
+        "description": "Laptop gaming high-end 16GB RAM",
+        "stock": 10
+    }
 }
 ```
 
@@ -245,10 +243,10 @@ pm.environment.set("token", jsonData.data.token);
 
 ```json
 {
-  "name": "Produk Ilegal",
-  "price": 10000.0,
-  "description": "dicoba oleh USER",
-  "stock": 1
+  "name": "Laptop Gaming Pro",
+  "price": 15000000.0,
+  "description": "High performance gaming lapto",
+  "stock": 10
 }
 ```
 
@@ -290,15 +288,15 @@ pm.environment.set("token", jsonData.data.token);
 **Response (201 Created):**
 ```json
 {
-  "status": 200,
-  "message": "Produk berhasil ditambahkan",
-  "data": {
-    "id": 1,
-    "name": "Laptop Gaming Pro",
-    "price": 15000000.0,
-    "description": "High performance gaming laptop",
-    "stock": 10
-  }
+    "status": 200,
+    "message": "Produk berhasil ditambahkan",
+    "data": {
+        "id": 7,
+        "name": "Laptop Gaming Pro",
+        "price": 15000000.0,
+        "description": "High performance gaming laptop",
+        "stock": 10
+    }
 }
 ```
 
@@ -317,15 +315,15 @@ pm.environment.set("token", jsonData.data.token);
 **Response (200 OK):**
 ```json
 {
-  "status": 200,
-  "message": "Produk berhasil diperbarui",
-  "data": {
-    "id": 1,
-    "name": "Laptop Gaming Pro v2",
-    "price": 16500000.0,
-    "description": "Updated spec gaming laptop",
-    "stock": 15
-  }
+    "status": 200,
+    "message": "Produk berhasil diperbarui",
+    "data": {
+        "id": 1,
+        "name": "Laptop Gaming Pro v2",
+        "price": 16500000.0,
+        "description": "Updated spec gaming laptop",
+        "stock": 15
+    }
 }
 ```
 
@@ -444,13 +442,30 @@ Implementasi lengkap ada di [`ProductService.java`](src/main/java/com/assignment
 
 ### Cara Mengukur & Membandingkan Response Time (Sebelum vs Sesudah Caching)
 
+Langkah pengukuran:
+
 1. **Jalankan aplikasi** (`./mvnw spring-boot:run`) dan login untuk mendapatkan token.
 2. Buka **Postman** → request `GET /api/products` dengan token Bearer.
-3. **Skenario "sebelum caching"**: matikan caching sementara dengan mengomentari `@Cacheable` pada `getAllProducts()` di `ProductService.java`, restart aplikasi, lalu kirim request yang sama beberapa kali. Catat waktu response (di Postman: tab **Console**/info di bawah response body, atau lihat log).
-4. **Skenario "sesudah caching"**: kembalikan `@Cacheable`, restart aplikasi, kirim request yang sama beberapa kali. Request pertama tetap lambat (cache miss → query DB), tetapi request ke-2 dan seterusnya **jauh lebih cepat** (cache hit).
-5. Screenshot hasil Postman sebagai bukti perbandingan, lalu dokumentasikan di laporan.
+3. Kirim request yang sama beberapa kali, lalu catat waktu response (di Postman: info di bawah response body atau tab **Console**).
+4. Tempel screenshot hasil pengukuran pada sub-bagian **Sebelum Caching** dan **Sesudah Caching** di bawah.
 
 > **Tips:** Karena ConcurrentMapCache berada dalam memori aplikasi, untuk membandingkan secara adil pastikan kedua skenario diuji pada kondisi yang sama (jumlah data, koneksi DB yang sama, dan gunakan beberapa request beruntun).
+
+#### 🔴 Sebelum Caching
+
+Matikan caching sementara dengan mengomentari `@Cacheable` pada `getAllProducts()` di `ProductService.java`, restart aplikasi, lalu kirim request yang sama beberapa kali. Setiap request tetap melakukan query ke database sehingga response time cenderung lebih lambat dan relatif stabil.
+
+> **Screenshot bukti (tempel di bawah):**
+
+![Screenshot Sebelum Caching](docs/screenshots/before-caching.png)
+
+#### 🟢 Sesudah Caching
+
+Kembalikan `@Cacheable`, restart aplikasi, lalu kirim request yang sama beberapa kali. Request pertama tetap lambat (cache miss → query DB), tetapi request ke-2 dan seterusnya **jauh lebih cepat** (cache hit — langsung dilayani dari memori tanpa menyentuh database).
+
+> **Screenshot bukti (tempel di bawah):**
+
+![Screenshot Sesudah Caching](docs/screenshots/after-caching.png)
 
 ---
 
