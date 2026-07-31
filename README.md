@@ -457,7 +457,7 @@ Matikan caching sementara dengan mengomentari `@Cacheable` pada `getAllProducts(
 
 > **Screenshot bukti (tempel di bawah):**
 
-![Screenshot Sebelum Caching](docs/screenshots/before-caching.png)
+![Screenshot Sebelum Caching](docs/screenshots/image.png)
 
 #### 🟢 Sesudah Caching
 
@@ -465,7 +465,7 @@ Kembalikan `@Cacheable`, restart aplikasi, lalu kirim request yang sama beberapa
 
 > **Screenshot bukti (tempel di bawah):**
 
-![Screenshot Sesudah Caching](docs/screenshots/after-caching.png)
+![Screenshot Sesudah Caching](docs/screenshots/image-sesudah.png)
 
 ---
 
