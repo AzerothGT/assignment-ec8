@@ -101,6 +101,19 @@ Untuk menjalankan semua pengujian unit test (menggunakan H2 In-Memory Database):
 ./mvnw test
 ```
 
+### 4. Menjalankan di IntelliJ IDEA
+
+1. Buka **IntelliJ IDEA** → **Open** → pilih folder proyek (`ec8`) → klik **Trust Project** jika diminta.
+2. Jika muncul notifikasi *Maven project not imported* → klik **Load Maven Project**. Tunggu hingga IntelliJ selesai mengunduh dependency (bisa beberapa menit di awal).
+3. Pastikan SDK: **File → Project Structure → Project** → pilih **JDK 17 atau lebih baru** (mis. 21/23).
+4. **Wajib** aktifkan annotation processing Lombok: **Settings (Ctrl+Alt+S) → Build, Execution, Deployment → Compiler → Annotation Processors** → centang **Enable annotation processing** → Apply/OK. Tanpa ini, IntelliJ akan menampilkan error "cannot find symbol" (getter/builder dari Lombok) saat menjalankan aplikasi.
+5. Pastikan **MySQL Server** berjalan di `localhost:3306` dan kredensial pada `application.yaml` sudah sesuai.
+6. Jalankan aplikasi: buka `src/main/java/com/assignment/ec8/Ec8Application.java` → klik kanan → **Run 'Ec8Application'**. Aplikasi berjalan di `http://localhost:8080`.
+   - Alternatif: tab **Maven** (sisi kanan) → `ec8` → `Plugins` → `spring-boot` → **spring-boot:run**.
+7. Menjalankan semua test: klik kanan folder `src/test` → **Run 'All Tests'** (menggunakan H2, tidak butuh MySQL).
+
+> Saat pertama kali dijalankan, aplikasi otomatis membuat akun demo `admin/admin123` (ADMIN), `user/user123` (USER), dan 6 produk sampel jika tabel masih kosong.
+
 ---
 
 ## 📡 Daftar Endpoint API & Hak Akses
@@ -180,16 +193,16 @@ Untuk menjalankan semua pengujian unit test (menggunakan H2 In-Memory Database):
 **Response (200 OK)** — salin nilai `data.token` (atau simpan otomatis, lihat Langkah 3):
 ```json
 {
-  "status": 200,
-  "message": "Login berhasil",
-  "data": {
-    "id": 1,
-    "username": "budi",
-    "email": "budi@example.com",
-    "role": "USER",
-    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidWRpIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTYwMDAwMDAsImV4cCI6MTc1NjA4NjQwMH0.xxxxxxxxxxxx",
-    "tokenType": "Bearer"
-  }
+    "status": 200,
+    "message": "Login berhasil",
+    "data": {
+        "id": 3,
+        "username": "budi",
+        "email": "budi@example.com",
+        "role": "USER",
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJidWRpIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3ODU1MTcyNTAsImV4cCI6MTc4NTYwMzY1MH0.puQtYLZ9sdcR46aBBsgTYiVhQsq29vjuK4UuP1YWJaI_r-FAZZLVjN_6L1RM4-6l",
+        "tokenType": "Bearer"
+    }
 }
 ```
 
@@ -199,7 +212,7 @@ Agar tidak perlu menyalin token manual setiap kali, buka tab **Tests** pada requ
 
 ```javascript
 const jsonData = pm.response.json();
-pm.collectionVariables.set("token", jsonData.data.token);
+pm.environment.set("token", jsonData.data.token);
 ```
 
 #### Langkah 4 — Akses endpoint dengan token
@@ -211,17 +224,17 @@ pm.collectionVariables.set("token", jsonData.data.token);
 **Response (200 OK):**
 ```json
 {
-  "status": 200,
-  "message": "Sukses",
-  "data": [
-    {
-      "id": 1,
-      "name": "Laptop Gaming Pro",
-      "price": 15000000.0,
-      "description": "Laptop gaming high-end 16GB RAM",
-      "stock": 10
-    }
-  ]
+    "status": 200,
+    "message": "Berhasil",
+    "data": [
+        {
+            "id": 1,
+            "name": "Laptop Gaming Pro",
+            "price": 1.5E7,
+            "description": "Laptop gaming high-end 16GB RAM",
+            "stock": 10
+        }
+    ]
 }
 ```
 
