@@ -17,3 +17,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
 server:
   port: 8080
+
+app:
+  jwt:
+    # Secret key untuk menandatangani token JWT (HS256). Minimal 32 karakter.
+    # Ganti dengan nilai yang aman (env var) jika dipakai di produksi.
+    secret: ec8-product-catalog-jwt-secret-key-2026-change-me-in-production
+    expiration-ms: 86400000
