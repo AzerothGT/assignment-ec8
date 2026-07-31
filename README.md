@@ -122,15 +122,30 @@ Untuk menjalankan semua pengujian unit test (menggunakan H2 In-Memory Database):
 
 ## 🔐 Autentikasi & Otorisasi (JWT)
 
-### Alur Penggunaan di Postman / cURL
+### Alur Penggunaan di Postman
 
-#### Langkah 1 — Register
+> Alur lengkap sesuai assignment: **register → login (ambil JWT token) → akses endpoint dengan token → percobaan akses endpoint ADMIN menggunakan role USER (harus ditolak, 403)**.
 
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username":"budi","email":"budi@example.com","password":"password123"}'
+**Persiapan:**
+1. Buka **Postman**, buat Collection baru bernama `EC8 Product Catalog` agar semua request tersimpan rapi.
+2. Base URL semua request: `http://localhost:8080`.
+3. Saat ada request yang memerlukan token, gunakan tab **Authorization** → Type: **Bearer Token**. Ambil screenshot setiap response sebagai bukti untuk laporan.
+
+#### Langkah 1 — Register (Public)
+
+1. Buat request baru: **POST** `http://localhost:8080/api/auth/register`.
+2. Klik tab **Body** → pilih **raw** → ubah tipe konten menjadi **JSON**.
+3. Isi body:
+
+```json
+{
+  "username": "budi",
+  "email": "budi@example.com",
+  "password": "password123"
+}
 ```
+
+4. Klik **Send**.
 
 **Response (201 Created):**
 ```json
@@ -150,13 +165,19 @@ curl -X POST http://localhost:8080/api/auth/register \
 
 #### Langkah 2 — Login (mendapatkan JWT token)
 
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"budi","password":"password123"}'
+1. Buat request baru: **POST** `http://localhost:8080/api/auth/login`.
+2. Tab **Body** → **raw** → **JSON**, isi:
+
+```json
+{
+  "username": "budi",
+  "password": "password123"
+}
 ```
 
-**Response (200 OK):**
+3. Klik **Send**.
+
+**Response (200 OK)** — salin nilai `data.token` (atau simpan otomatis, lihat Langkah 3):
 ```json
 {
   "status": 200,
@@ -172,30 +193,53 @@ curl -X POST http://localhost:8080/api/auth/login \
 }
 ```
 
-#### Langkah 3 — Akses endpoint dengan token
+#### Langkah 3 — Simpan token secara otomatis (opsional, disarankan)
 
-Semua endpoint produk wajib menyertakan header `Authorization: Bearer <TOKEN>`:
+Agar tidak perlu menyalin token manual setiap kali, buka tab **Tests** pada request **Login** lalu tambahkan script berikut. Token akan otomatis tersimpan sebagai *collection variable* `token`:
 
-```bash
-curl http://localhost:8080/api/products \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidWRpIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTYwMDAwMDAsImV4cCI6MTc1NjA4NjQwMH0.xxxxxxxxxxxx"
+```javascript
+const jsonData = pm.response.json();
+pm.collectionVariables.set("token", jsonData.data.token);
 ```
 
-Di **Postman**, cara mengaturnya:
-1. Login, salin nilai `data.token` dari response.
-2. Klik tab **Authorization** pada request → pilih type **Bearer Token** → tempel token.
-3. Atau tambahkan header manual: `Authorization: Bearer <TOKEN>`.
+#### Langkah 4 — Akses endpoint dengan token
 
-#### Langkah 4 — Percobaan akses ADMIN menggunakan role USER (harus ditolak)
+1. Buat request baru: **GET** `http://localhost:8080/api/products`.
+2. Klik tab **Authorization** → Type: **Bearer Token** → isi Token dengan `{{token}}` (Postman otomatis mengambil dari collection variable). Jika tidak memakai variable, tempel token hasil login secara manual.
+3. Klik **Send**.
 
-User ber-role `USER` mencoba `POST /api/products` (endpoint ADMIN only):
-
-```bash
-curl -X POST http://localhost:8080/api/products \
-  -H "Authorization: Bearer <TOKEN_USER>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Produk Ilegal","price":10000,"description":"dicoba oleh USER","stock":1}'
+**Response (200 OK):**
+```json
+{
+  "status": 200,
+  "message": "Sukses",
+  "data": [
+    {
+      "id": 1,
+      "name": "Laptop Gaming Pro",
+      "price": 15000000.0,
+      "description": "Laptop gaming high-end 16GB RAM",
+      "stock": 10
+    }
+  ]
+}
 ```
+
+#### Langkah 5 — Percobaan akses ADMIN menggunakan role USER (harus ditolak 403)
+
+1. Buat request baru: **POST** `http://localhost:8080/api/products` dengan Authorization Bearer token **USER** (hasil Langkah 2).
+2. Tab **Body** → **raw** → **JSON**, isi:
+
+```json
+{
+  "name": "Produk Ilegal",
+  "price": 10000.0,
+  "description": "dicoba oleh USER",
+  "stock": 1
+}
+```
+
+3. Klik **Send** — endpoint ini hanya boleh diakses ADMIN, sehingga:
 
 **Response (403 Forbidden):**
 ```json
@@ -206,7 +250,10 @@ curl -X POST http://localhost:8080/api/products \
 }
 ```
 
-Sedangkan jika token **ADMIN** yang digunakan, request yang sama akan sukses (201 Created). Jika request dikirim **tanpa token**, response **401 Unauthorized**.
+4. **Bukti otorisasi berjalan:** login ulang sebagai `admin/admin123` (akun demo, role ADMIN), ulangi request yang sama dengan token ADMIN → **Response (201 Created)**.
+5. **Bukti autentikasi berjalan:** kirim `GET /api/products` **tanpa token** (Authorization: No Auth) → **Response (401 Unauthorized)**.
+
+> Perbandingan **response time** sebelum vs sesudah caching diukur dari request `GET /api/products` di Postman (lihat bagian [Caching](#-caching-pada-spring-boot)).
 
 ---
 
